@@ -2,5 +2,24 @@
   "private": true,
   "scripts": {
     "dev": "pnpm -r run dev"
-  }
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4"
+  },
+  "name": "portfolio",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/infolion/portfolio.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/infolion/portfolio/issues"
+  },
+  "homepage": "https://github.com/infolion/portfolio#readme",
+  "description": ""
 }
