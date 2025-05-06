@@ -1,13 +1,27 @@
 "use client";
 import { useRef, useState } from "react";
-import { Editor } from "@toast-ui/react-editor";
-import "@toast-ui/editor/dist/toastui-editor.css";
-import { supabase } from "../../../lib/supabase";
-import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
+import dynamic from "next/dynamic";
+import { supabase } from "../../../lib/supabase";
+
+// 동적 임포트로 Toast UI Editor 가져오기
+const Editor = dynamic(
+  () =>
+    import("@toast-ui/react-editor").then((mod) => {
+      // 클라이언트에서만 CSS 로드
+      if (typeof window !== "undefined") {
+        require("@toast-ui/editor/dist/toastui-editor.css");
+      }
+      return mod.Editor;
+    }),
+  { ssr: false }
+);
 
 export default function NewPostPage() {
-  const editorRef = useRef<Editor>(null);
+  const editorRef = useRef<{
+    getInstance: () => { getMarkdown: () => string };
+  } | null>(null);
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [excerpt, setExcerpt] = useState("");
@@ -120,15 +134,17 @@ export default function NewPostPage() {
             className="w-full max-h-60 object-contain mb-2"
           />
         )}
-        <Editor
-          ref={editorRef}
-          initialValue=""
-          previewStyle="vertical"
-          height="400px"
-          initialEditType="markdown"
-          useCommandShortcut={true}
-          language="ko"
-        />
+        {typeof window !== "undefined" && (
+          <Editor
+            ref={editorRef}
+            initialValue=""
+            previewStyle="vertical"
+            height="400px"
+            initialEditType="markdown"
+            useCommandShortcut={true}
+            language="ko"
+          />
+        )}
         <button
           type="submit"
           className="bg-stone-600 hover:bg-stone-800 dark:bg-stone-50 dark:hover:bg-stone-200 text-white dark:text-stone-950  px-6 py-2 rounded-full shadow transition text-lg font-semibold"
