@@ -1,8 +1,6 @@
 {
   "framework": "nextjs",
-  "buildCommand": null,
+  "buildCommand": "cd apps/my-app && npm install --force && npm run build",
   "outputDirectory": "apps/my-app/.next",
-  "installCommand": null,
-  "monorepo": true,
-  "root": "apps/my-app"
+  "installCommand": "cd apps/my-app && npm install --force"
 }
