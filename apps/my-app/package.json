@@ -36,5 +36,11 @@
     "postcss": "^8.5.3",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.8.3"
+  },
+  "overrides": {
+    "@toast-ui/react-editor": {
+      "react": "$react",
+      "react-dom": "$react-dom"
+    }
   }
 }
