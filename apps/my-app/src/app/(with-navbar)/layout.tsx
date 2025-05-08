@@ -19,7 +19,7 @@ export default function WithNavbarLayout({
   return (
     <ThemeProvider>
       <Navbar />
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 mb-20">{children}</main>
       <Footer />
     </ThemeProvider>
   );

@@ -1,16 +1,33 @@
 "use client";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { supabase } from "../../../lib/supabase";
+import { useAuth } from "../../../../context/auth-context";
+import { useRouter } from "next/navigation";
 
 export default function NewPostPage() {
+  const { user, isAdmin } = useAuth();
+  const router = useRouter();
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [excerpt, setExcerpt] = useState("");
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  // 권한 확인
+  useEffect(() => {
+    if (!isAdmin) {
+      // 관리자가 아니면 리다이렉트
+      router.push("/login");
+    }
+  }, [isAdmin, router]);
+
+  // 관리자가 아니면 페이지 숨기기
+  if (!isAdmin) {
+    return null;
+  }
 
   // 이미지 미리보기
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,7 +81,7 @@ export default function NewPostPage() {
       alert(`글 등록 실패: ${error.message}`);
     } else {
       alert("글이 등록되었습니다!");
-      // router.push("/blog");
+      router.push("/blog");
     }
   };
 
@@ -119,7 +136,7 @@ export default function NewPostPage() {
         </div>
         <button
           type="submit"
-          className="bg-stone-600 hover:bg-stone-800 dark:bg-stone-50 dark:hover:bg-stone-200 text-white dark:text-stone-950  px-6 py-2 rounded-full shadow transition text-lg font-semibold"
+          className="bg-stone-600 hover:bg-stone-800 dark:bg-stone-50 dark:hover:bg-stone-200 text-white dark:text-stone-950 px-6 py-2 rounded-full shadow transition text-lg font-semibold"
           disabled={loading}
         >
           {loading ? "등록 중..." : "등록하기"}

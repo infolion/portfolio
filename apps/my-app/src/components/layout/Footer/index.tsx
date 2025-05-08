@@ -1,3 +1,5 @@
+import { FaMapMarkerAlt, FaPhoneAlt, FaEnvelope } from "react-icons/fa";
+
 export default function Footer() {
   return (
     <footer className="bg-stone-300 text-black dark:bg-stone-600 dark:text-white py-8">
@@ -7,16 +9,16 @@ export default function Footer() {
             <h3 className="text-lg font-semibold mb-4">Contact</h3>
             <div className="space-y-2">
               <p className="flex items-center">
-                <span className="mr-2">📍</span>
+                <FaMapMarkerAlt className="mr-2" />
                 Seoul, South Korea
               </p>
               <p className="flex items-center">
-                <span className="mr-2">📞</span>
-                +82 010-1234-5678
+                <FaPhoneAlt className="mr-2" />
+                +82 010-5061-8674
               </p>
               <p className="flex items-center">
-                <span className="mr-2">✉️</span>
-                @gmail.com
+                <FaEnvelope className="mr-2" />
+                jwsong5160@gmail.com
               </p>
             </div>
           </div>
@@ -24,8 +26,7 @@ export default function Footer() {
 
         <div className="mt-8 pt-8 border-t border-gray-700 text-center text-sm dark:border-gray-200">
           <p>
-            &copy; {new Date().getFullYear()} Your Company Name. All rights
-            reserved.
+            &copy; {new Date().getFullYear()} Junwoo Song. All rights reserved.
           </p>
         </div>
       </div>

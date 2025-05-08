@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { supabase } from "../../lib/supabase";
+import { useAuth } from "../../../context/auth-context";
+import { motion } from "framer-motion";
 
 type Post = {
   id: number;
@@ -17,6 +19,7 @@ type Post = {
 
 export default function BlogPage() {
   const [posts, setPosts] = useState<Post[]>([]);
+  const { isAdmin } = useAuth();
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -41,23 +44,34 @@ export default function BlogPage() {
       {/* 선 + 버튼 */}
       <div className="flex items-center mb-12">
         <div className="flex-1 h-0.5 bg-slate-950 dark:bg-slate-50" />
-        <Link href="/blog/new" className="ml-4">
-          <button
-            type="button"
-            className="bg-stone-600 hover:bg-stone-800 dark:bg-stone-50 dark:hover:bg-stone-200 text-white dark:text-stone-950 px-6 py-2 rounded-full shadow transition text-lg font-semibold"
-          >
-            글 작성
-          </button>
-        </Link>
+        {isAdmin && (
+          <Link href="/blog/new" className="ml-4">
+            <button
+              type="button"
+              className="bg-stone-600 hover:bg-stone-800 dark:bg-stone-50 dark:hover:bg-stone-200 text-white dark:text-stone-950 px-6 py-2 rounded-full shadow transition text-lg font-semibold"
+            >
+              글 작성
+            </button>
+          </Link>
+        )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {posts.length === 0 ? (
           <p>아직 글이 없습니다.</p>
         ) : (
-          posts.map((post) => (
+          posts.map((post, index) => (
             <Link key={post.id} href={`/blog/${post.id}`}>
-              <div className="bg-stone-700 dark:bg-stone-500 rounded-lg overflow-hidden">
+              <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 0.6,
+                  delay: index * 0.2, // 순차적으로 등장
+                  ease: "easeOut",
+                }}
+                className="bg-stone-700 dark:bg-stone-500 rounded-lg overflow-hidden shadow-lg"
+              >
                 <div className="bg-stone-50 dark:bg-stone-700 p-8">
                   <Image
                     src={post.image || "/placeholder.svg"}
@@ -67,15 +81,23 @@ export default function BlogPage() {
                     className="w-full h-auto rounded-lg"
                   />
                 </div>
-                <div className="p-6 text-white dark:text-stone-950">
+                <div className="p-6 text-white dark:text-stone-800">
                   <div className="flex justify-between items-center mb-4">
                     <span className="text-sm">{post.category}</span>
-                    <span className="text-sm text-gray-400">{post.date}</span>
+                    <span className="text-sm text-gray-400">
+                      {new Intl.DateTimeFormat("default", {
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      }).format(new Date(post.date))}
+                    </span>
                   </div>
                   <h2 className="text-xl font-bold mb-2">{post.title}</h2>
                   <p className="text-gray-300">{post.excerpt}</p>
                 </div>
-              </div>
+              </motion.div>
             </Link>
           ))
         )}
