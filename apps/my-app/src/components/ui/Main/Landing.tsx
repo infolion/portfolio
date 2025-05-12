@@ -6,7 +6,7 @@ export default async function Landing() {
         <div className="text-sm text-gray-500 mb-4">
           포트폴리오 & 블로그 - {new Date().toLocaleDateString()}
         </div>
-        <h1 className="text-5xl md:text-9xl font-bold tracking-tighter mb-8">
+        <h1 className="text-7xl md:text-9xl font-bold tracking-tighter mb-8">
           Hello.
         </h1>
         <div className="flex items-center justify-center gap-2">

@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { supabase } from "../../lib/supabase";
 import { useAuth } from "../../../context/auth-context";
 import { motion } from "framer-motion";
+import NoImagePlaceholder from "./noImagePlaceholder";
 
 type Post = {
   id: number;
@@ -19,7 +20,13 @@ type Post = {
 
 export default function BlogPage() {
   const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
   const { isAdmin } = useAuth();
+
+  const skeletonKeys = useMemo(
+    () => Array.from({ length: 6 }, () => crypto.randomUUID()),
+    []
+  );
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -33,6 +40,7 @@ export default function BlogPage() {
       } else {
         setPosts(data || []);
       }
+      setLoading(false);
     };
 
     fetchPosts();
@@ -57,31 +65,51 @@ export default function BlogPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {posts.length === 0 ? (
+        {loading ? (
+          skeletonKeys.map((key) => (
+            <div
+              key={key}
+              className="bg-stone-700 dark:bg-stone-500 rounded-lg overflow-hidden shadow-lg animate-shimmer"
+            >
+              {/* 이미지 자리 스켈레톤 */}
+              <div className="w-full h-48 md:h-96 bg-stone-200 dark:bg-gray-600 animate-shimmer" />
+              {/* 텍스트 자리 스켈레톤 */}
+              <div className="p-6 space-y-4 mt-3 mb-3">
+                <div className="h-4 bg-stone-200 dark:bg-gray-600 rounded w-3/4 animate-shimmer" />
+                <div className="h-3 bg-stone-200 dark:bg-gray-600 rounded w-1/2 animate-shimmer" />
+                <div className="h-3 bg-stone-200 dark:bg-gray-600 rounded w-1/4 animate-shimmer" />
+              </div>
+            </div>
+          ))
+        ) : posts.length === 0 ? (
           <p>아직 글이 없습니다.</p>
         ) : (
           posts.map((post, index) => (
             <Link key={post.id} href={`/blog/${post.id}`}>
               <motion.div
-                initial={{ opacity: 0, y: 50 }}
+                initial={{ opacity: 0, y: 0 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
                   duration: 0.6,
-                  delay: index * 0.2, // 순차적으로 등장
+                  delay: index * 0.2,
                   ease: "easeOut",
                 }}
                 className="bg-stone-700 dark:bg-stone-500 rounded-lg overflow-hidden shadow-lg"
               >
-                <div className="bg-stone-50 dark:bg-stone-700 p-8">
-                  <Image
-                    src={post.image || "/placeholder.svg"}
-                    alt={post.title}
-                    width={800}
-                    height={600}
-                    className="w-full h-auto rounded-lg"
-                  />
+                <div className="h-48 md:h-96 overflow-hidden bg-stone-200 dark:bg-stone-700">
+                  {post.image ? (
+                    <Image
+                      src={post.image}
+                      alt={post.title}
+                      width={800}
+                      height={600}
+                      className="w-full h-full object-contain"
+                    />
+                  ) : (
+                    <NoImagePlaceholder />
+                  )}
                 </div>
-                <div className="p-6 text-white dark:text-stone-800">
+                <div className="p-6 text-white dark:text-stone-200">
                   <div className="flex justify-between items-center mb-4">
                     <span className="text-sm">{post.category}</span>
                     <span className="text-sm text-gray-400">
@@ -89,13 +117,11 @@ export default function BlogPage() {
                         year: "numeric",
                         month: "2-digit",
                         day: "2-digit",
-                        hour: "2-digit",
-                        minute: "2-digit",
                       }).format(new Date(post.date))}
                     </span>
                   </div>
                   <h2 className="text-xl font-bold mb-2">{post.title}</h2>
-                  <p className="text-gray-300">{post.excerpt}</p>
+                  <p className="text-stone-200">{post.excerpt}</p>
                 </div>
               </motion.div>
             </Link>
