@@ -33,7 +33,7 @@ export default function Info() {
           <p className="text-lg text-gray-700 dark:text-stone-400 mb-6">
             풀스택 웹 개발자를 지망하고 있습니다. React와 Spring을 활용한 풀스택
             개발을 공부하며, TypeScript와 TailwindCSS로 더 나은 사용자 경험을
-            만들어가는 개발자가 되고자 합니다. (자동 배포 테스트)
+            만들어가는 개발자가 되고자 합니다.
           </p>
           <div className="space-y-4">
             <div>
